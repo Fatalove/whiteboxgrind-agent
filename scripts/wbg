@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+project=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+source /home/wbg/whiteboxgrind-work/env.sh
+export PYTHONPATH="$project/src"
+exec /home/wbg/whiteboxgrind-work/venv/bin/python -m wbg "$@"

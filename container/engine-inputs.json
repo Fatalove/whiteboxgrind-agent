@@ -1,0 +1,28 @@
+{
+  "source_commits": {
+    "whiteboxgrind": "b4f5b78a415aaf4a864f31b9d85c3305a4970b4f",
+    "asynchronous": "2584d9c314451d7afb318d36bd8c86bf57aa945a",
+    "tiny-AES-c": "23856752fbd139da0b8ca6e471a13d5bcc99a08d"
+  },
+  "patch_sha256": "1e60147a9d90433429379e9354f0c9b69fdcec8ef35780ae5c64531a3c07c567",
+  "file_names": [
+    "src/whiteboxgrind/cpp/tracer.cpp",
+    "src/tiny-AES-c/aes.c",
+    "prefix/bin/valgrind",
+    "prefix/bin/tracer",
+    "prefix/bin/filter",
+    "prefix/bin/unique",
+    "prefix/bin/leakage",
+    "prefix/bin/cpa",
+    "prefix/bin/info",
+    "prefix/include/valgrind/whiteboxgrind.h"
+  ],
+  "python_packages": [
+    "numpy",
+    "packaging",
+    "pybind11",
+    "pycryptodome",
+    "PyYAML",
+    "y5"
+  ]
+}

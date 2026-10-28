@@ -1,0 +1,13 @@
+--- a/cpp/tracer.cpp
++++ b/cpp/tracer.cpp
+@@ -272,7 +272,9 @@
+             die("Failed to accept connection");
+ 
+         inputs.write(reinterpret_cast<char *>(input.data()), input.size());
+-        inputs.close();
++        inputs.flush();
++        if (!inputs) die("Failed to write complete target input");
++        inputs.pipe().close(); // Boost 1.74 streambuf close() only flushes; send real EOF.
+ 
+         while (true)
+         {

@@ -1,0 +1,22 @@
+{
+  "name": "whiteboxgrind",
+  "version": "0.3.0-rc.1",
+  "description": "Whiteboxgrind Agent: local AES-128 C analysis and independently verified results.",
+  "skills": "./skills/",
+  "requires_local_executor": true,
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/whiteboxgrind-setup/SKILL.md"
+    }
+  },
+  "interface": {
+    "displayName": "Whiteboxgrind Agent",
+    "shortDescription": "鐧界洅瀵嗙爜瀛︿範涓庣珵璧涘伐鍏烽摼",
+    "developerName": "Whiteboxgrind Agent contributors",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ]
+  }
+}

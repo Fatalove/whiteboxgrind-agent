@@ -1,0 +1,5 @@
+{
+  "name": "whiteboxgrind-local",
+  "interface": {"displayName": "Whiteboxgrind Agent"},
+  "plugins": [{"name": "whiteboxgrind", "source": {"source": "local", "path": "./plugins/whiteboxgrind"}, "category": "Developer Tools", "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"}}]
+}
