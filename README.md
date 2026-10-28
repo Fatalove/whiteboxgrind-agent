@@ -8,6 +8,18 @@
 
 [English quickstart](README.en.md) · [安装与排错](docs/setup.md) · [任务与结果](docs/tasks.md) · [验收范围](docs/validation.md) · [组件许可](THIRD_PARTY_NOTICES.md)
 
+## 目录关系
+
+建议在任意位置建立一个项目主目录，将源码与私有数据并列放入其中：
+
+```text
+whiteboxgrind/
+├─ whiteboxgrind-agent/     本仓库：代码、插件、测试和用户文档
+└─ whiteboxgrind-data/      私有数据：任务、运行状态、缓存、发行包和档案
+```
+
+相对于本仓库，默认数据目录为 `../whiteboxgrind-data`。实际工具、数据和软件位置由安装参数指定，保存到不纳入 Git 的部署配置；不要求用户采用某个盘符。Docker 与专用 PowerShell 可安装到用户选择的软件目录。
+
 ## 使用流程
 
 1. 获取插件并在 Codex 安装。公开发布后，仓库 marketplace 将提供插件；当前使用本地目录或受信的离线包。
@@ -35,10 +47,15 @@
 需要受信渠道提供的发行 ZIP 和 SHA256。以下路径仅为示例，安装位置和数据位置可分别指定；无需宿主 Python 或独立 Git。
 
 ```powershell
-# 在插件 scripts 目录调用；SHA256 必须取自受信摘要。
-.\bootstrap.ps1 -Action Install -Destination 'D:\Apps\Whiteboxgrind\0.3.0-rc.1' `
-  -DataRoot 'D:\AIGC\whiteboxgrind-data' -AppsRoot 'D:\Apps' `
-  -Archive 'D:\Downloads\whiteboxgrind-0.3.0-rc.1-windows-local.zip' -ExpectedSha256 '<受信的64位SHA256>'
+# 从包含 whiteboxgrind-agent 的项目主目录执行。
+$WorkspaceRoot = (Get-Location).Path
+$DataRoot = Join-Path $WorkspaceRoot 'whiteboxgrind-data'
+$AppsRoot = 'D:\Apps'  # 示例软件目录，可自行选择；不写死在程序中。
+$ToolRoot = Join-Path $AppsRoot 'Whiteboxgrind/0.3.0-rc.1'
+$Archive = Join-Path $DataRoot 'releases/whiteboxgrind-0.3.0-rc.1-windows-local.zip'
+& .\whiteboxgrind-agent\plugins\whiteboxgrind\scripts\bootstrap.ps1 `
+  -Action Install -Destination $ToolRoot -DataRoot $DataRoot -AppsRoot $AppsRoot `
+  -Archive $Archive -ExpectedSha256 '<受信的64位SHA256>'
 ```
 
 包内包含私有 PowerShell、固定 Docker 镜像及对应构建源码。Docker Desktop 本身不随包分发，缺失时使用固定官方安装包并验证摘要和签名。当前在线发行描述未配置，工具会明确报出此状态。
@@ -48,11 +65,16 @@
 在已安装工具根执行。Agent 通常负责这些命令，不要求用户手写配置。
 
 ```powershell
+# 在已安装工具根执行，读取安装时保存的数据位置。
+$DataRoot = (Get-Content .\config\deployment.json -Raw | ConvertFrom-Json).data_root
+$CaseRoot = Join-Path $DataRoot 'cases/我的题目'
 .\scripts\wbg.ps1 doctor --json
-.\scripts\wbg.ps1 case prepare --case-root 'D:\AIGC\whiteboxgrind-data\cases\我的题目' --json
-# 多个 C 文件时增加 --source '主文件.c'；普通 AES 教学任务可使用 --example。
-.\scripts\wbg.ps1 analyze --config 'D:\AIGC\whiteboxgrind-data\cases\我的题目\task.json' `
-  --out 'D:\AIGC\whiteboxgrind-data\cases\我的题目\output\一个尚不存在的新目录' --json
+$Task = .\scripts\wbg.ps1 case prepare --case-root $CaseRoot --json | ConvertFrom-Json
+# 多个 C 文件时增加 --source '主文件.c'；教学任务可使用 --example。
+# 只有 prepared 才启动；缺少材料或需选择源码时先按返回信息处理。
+if ($Task.status -eq 'prepared') {
+  .\scripts\wbg.ps1 analyze --config $Task.config --out $Task.next_output --json
+}
 .\scripts\wbg.ps1 status --run-id '<本次ID>' --json
 ```
 

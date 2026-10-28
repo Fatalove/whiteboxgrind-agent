@@ -8,7 +8,7 @@
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install.ps1 -Action Install `
-  -DataRoot 'D:\AIGC\whiteboxgrind-data' -AppsRoot 'D:\Apps'
+  -DataRoot 'D:\AIGC\whiteboxgrind\whiteboxgrind-data' -AppsRoot 'D:\Apps'
 ```
 
 首次安装 Docker 需先接受官方协议，再传 `-AcceptDockerTerms`。也可用 `-DockerInstaller` 提供未修改的固定官方安装包。缺失的 WSL/系统功能需要管理员权限，固件虚拟化或重启需要用户参与；安装器不得自动重启机器。
