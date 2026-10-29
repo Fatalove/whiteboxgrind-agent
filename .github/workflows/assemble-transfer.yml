@@ -1,0 +1,21 @@
+name: Assemble verified transfer
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Join and verify uploaded parts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/transfer"
+          gh release download "v$(cat VERSION)" -R "$GITHUB_REPOSITORY" -p 'transfer-*' -D "$RUNNER_TEMP/transfer"
+          python3 scripts/release/assemble_transfer.py "$RUNNER_TEMP/transfer"
+          gh release upload "v$(cat VERSION)" "$RUNNER_TEMP/transfer/whiteboxgrind-$(cat VERSION)-windows.zip" -R "$GITHUB_REPOSITORY" --clobber
