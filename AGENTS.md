@@ -1,6 +1,6 @@
 # Development guidance
 
-This repository is the public source candidate for Whiteboxgrind Agent. Runtime data, target sources, recovered keys, personal authorizations and detailed research archives belong outside Git.
+This repository is the public prerelease source for Whiteboxgrind Agent. Runtime data, target sources, recovered keys, personal authorizations and detailed research archives belong outside Git.
 
 - Supported release target: Windows x64 + Codex local execution + Docker/WSL2, with the currently validated AES-128 C interfaces.
 - Keep deployment paths configurable. Do not add personal absolute paths to tracked files.

@@ -1,5 +1,7 @@
 # Whiteboxgrind Agent
 
+[![Source checks](https://github.com/Fatalove/whiteboxgrind-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/Fatalove/whiteboxgrind-agent/actions/workflows/ci.yml)
+
 通过 Codex 在本机检查环境、准备白盒 AES 赛题、调用 Whiteboxgrind 工具链，并交付带独立验证证据的分析结果。
 
 **首发支持 Windows x64 + Codex 本地执行 + Docker Desktop/WSL2，输入为兼容接口的 AES-128 C 源码。** 它是上游 [Whiteboxgrind](https://gitlab.lrz.de/tueisec/whiteboxgrind) 的自动化封装。它不保证陌生赛题可恢复，不支持直接分析任意 ELF、其他算法或自动改写题目。
