@@ -7,7 +7,7 @@ description: 在 Windows + Codex 本机检查、安装或修复 Whiteboxgrind Ag
 
 工具根优先使用用户指定目录或 WBG_PROJECT_ROOT，再查已安装工具的 current.json 指针、当前目录及 whiteboxgrind-agent 子目录。有效根含 scripts/wbg.ps1、src/wbg；新源码 checkout 不等于已安装引擎。通过本插件 scripts/invoke-wbg.ps1 -ToolRoot 实际根 -CliArgs @('doctor','--json') 调用。首发支持 Windows x64 + Docker/WSL2；不从本机成功推定 Linux、另一宿主或干净机通过。
 
-未安装时调用本插件 scripts/bootstrap.ps1，明确 Destination、DataRoot 和 AppsRoot。当前私有候选需 -Archive 和受信 -ExpectedSha256；在线安装只有在 scripts/release-source.json 提供固定 GitHub Releases URL 和摘要后才可用。未配置时如实报告，不猜 URL，不要求用户先手动装好全部引擎。
+未安装时调用本插件 scripts/bootstrap.ps1，明确 Destination、DataRoot 和 AppsRoot。公开预发布版通过 scripts/release-source.json 提供固定 GitHub Releases URL 和摘要，默认在线安装；离线需 -Archive 和受信 -ExpectedSha256。未配置时如实报告，不猜 URL，不要求用户先手动装好全部引擎。
 
 包解压后使用 scripts/install.ps1 -Action Check|Install|Repair，显式传 -DataRoot、-AppsRoot。入口检查 WSL 前置条件、配置私有 PowerShell、必要时安装 Docker、导入固定镜像并 doctor，不启动分析，不要求宿主 Python。需要管理员权限时申请实际平台权限；系统要求重启或固件虚拟化设置时保存状态并交代继续步骤，不自动重启。
 

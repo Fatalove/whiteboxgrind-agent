@@ -1,0 +1,50 @@
+name: Publish image
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing prerelease tag containing the Windows bundle
+        required: true
+        default: v0.3.0-rc.1
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: publish-image
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      packages: write
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Download verified release and select image
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE_TAG" == "v$(cat VERSION)" ]]
+          mkdir -p "$RUNNER_TEMP/bundle"
+          gh release download "$RELEASE_TAG" -R "$GITHUB_REPOSITORY" -p 'whiteboxgrind-*-windows.zip' -D "$RUNNER_TEMP/bundle"
+          python3 scripts/release/verify_public_bundle.py "$RUNNER_TEMP/bundle"
+          docker load -i "$RUNNER_TEMP/bundle/image.tar"
+          python3 scripts/release/select_loaded_image.py >> "$GITHUB_ENV"
+      - name: Test the released image
+        run: python3 scripts/release/check_image.py "$LOCAL_IMAGE" "$RUNNER_TEMP/image-tests"
+      - name: Publish exact runtime layers
+        shell: bash
+        run: |
+          set -euo pipefail
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}:$(cat VERSION)"
+          echo "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          docker tag "$LOCAL_IMAGE" "$IMAGE"
+          docker push "$IMAGE"
+          docker pull "$IMAGE"
+          python3 scripts/release/registry_record.py "$IMAGE" "$RUNNER_TEMP/registry.json"
+          gh release upload "$RELEASE_TAG" "$RUNNER_TEMP/registry.json" -R "$GITHUB_REPOSITORY" --clobber
+          docker logout ghcr.io

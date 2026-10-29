@@ -4,7 +4,9 @@
 
 安装顺序：检查宿主前置条件 → 选择工具、数据和软件位置 → 验证发行摘要 → 配置私有 PowerShell → 必要时安装 Docker → 导入固定镜像 → doctor。安装、Check、Repair 都不自动启动分析。
 
-解压后可从 Windows PowerShell 5.1 调用：
+优先从 [GitHub marketplace](https://github.com/Fatalove/whiteboxgrind-agent) 安装插件，并在新聊天调用 setup。插件 `scripts/release-source.json` 固定下载 URL 与 SHA256；在线引导不需要额外手填摘要。离线下载 ZIP 时应同时取得 `SHA256SUMS.txt`，向 bootstrap 显式传入 `-Archive` 和 `-ExpectedSha256`。
+
+解压后也可从 Windows PowerShell 5.1 调用：
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install.ps1 -Action Install `
@@ -17,7 +19,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install.ps1 -A
 
 | 问题 | 处理 |
 |---|---|
-| 在线发行未配置 | 使用受信的离线包和 SHA256；不要猜 URL |
+| 在线下载失败 | 检查 GitHub 网络访问；或从同一版本 Releases 下载 ZIP 和 SHA256SUMS.txt，再显式离线安装 |
 | Docker 服务未运行 | 启动既有 Docker Desktop 后重新检查；不据此判断镜像丢失 |
 | WSL 缺失、虚拟化未启用 | 按 prerequisites 检查返回的具体原因配置；系统需要重启时保存现场后再继续 |
 | PowerShell 损坏或版本不符 | 使用 Repair 建立独立副本，保留旧选择和修复记录 |

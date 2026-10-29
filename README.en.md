@@ -1,13 +1,17 @@
 # Whiteboxgrind Agent
 
-A local Codex plugin and command-line workflow for supported AES-128 C white-box targets, built around the Whiteboxgrind analysis toolchain.
+Local Codex automation for compatible AES-128 C targets, using Whiteboxgrind in Docker Desktop/WSL2 on Windows x64.
 
-**0.3.0-rc.1 is a local release candidate. Public download URLs and clean-Windows acceptance are pending.** GitHub publication has not happened.
+**0.3.0-rc.1 is a prerelease.** A real clean-Windows first installation remains unverified; see [acceptance limits](docs/validation.md).
 
-The supported launch target is Windows x64, local Codex execution, and Docker Desktop with WSL2. The workflow checks dependencies, prepares a task, runs a pilot, waits for a human decision before formal collection, and exports independently checked results next to the input. Arbitrary binaries, algorithms, and unfamiliar interfaces are outside this release's support.
+1. Add `https://github.com/Fatalove/whiteboxgrind-agent.git` as a plugin marketplace in Codex.
+2. Install `whiteboxgrind@whiteboxgrind-local`, open a new chat, and invoke `whiteboxgrind-setup`.
+3. Select tool/data/software locations. The pinned release descriptor downloads and checks the bundle. No host Python is required.
+4. Put target materials in a case's `input/`; ask `whiteboxgrind-analyze` to prepare it. A full pilot precedes your decision on formal collection.
+5. Read `output/<run>/report.md`, `recovery.json`, and independent verification. Choose retention after completion; no reply retains everything.
 
-See the [Chinese user guide](README.md) for installation, commands and troubleshooting. The plugin is under `plugins/whiteboxgrind`, with a repository marketplace under `.agents/plugins`. Until publication, use a trusted offline ZIP and its SHA256 with the plugin's `scripts/bootstrap.ps1`; do not invent a release URL.
+[Windows bundle and checksums](https://github.com/Fatalove/whiteboxgrind-agent/releases/tag/v0.3.0-rc.1) · Container: `ghcr.io/fatalove/whiteboxgrind-agent:0.3.0-rc.1` (`linux/amd64`). The Windows bundle already includes the locked image and corresponding source/license materials. Docker Desktop is downloaded from its official source when needed and is not redistributed.
 
-Each task contains `input`, a generated `task.json`, and separate `output` directories. `recovery.json` labels an AES-128 master-key candidate as hexadecimal and distinguishes a candidate from a verified result. Verification uses 16 disjoint holdout pairs; it is empirical evidence, not a proof of equivalence for all inputs. A recovered key is not automatically a competition flag.
+Only the supported AES-128 pointer interfaces are accepted. A verified AES master key is 16 bytes (32 hex characters), not automatically a challenge flag. No recovery guarantee is made for unknown targets. Historical runs and real keys stay outside Git.
 
-All terminal outcomes ask for a retention decision. No answer means keep everything. Detailed research records, target sources, recovered keys, runtime state and virtual disks stay outside Git. Original independent code is MIT licensed; upstream components and derived patches retain their respective licenses. See [third-party notices](THIRD_PARTY_NOTICES.md).
+[中文完整指南](README.md) · [Setup](docs/setup.md) · [Tasks and results](docs/tasks.md) · [License boundaries](THIRD_PARTY_NOTICES.md)

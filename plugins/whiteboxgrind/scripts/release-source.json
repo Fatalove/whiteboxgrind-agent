@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "image": {
+    "platform": "linux/amd64",
+    "reference": "ghcr.io/fatalove/whiteboxgrind-agent:0.3.0-rc.1"
+  },
+  "bundle": {
+    "url": "https://github.com/Fatalove/whiteboxgrind-agent/releases/download/v0.3.0-rc.1/whiteboxgrind-0.3.0-rc.1-windows.zip",
+    "bytes": 447499772,
+    "sha256": "7718a1ba2baa5b9e1620e2dbe61fddc1048763121a91c22c8d9d41abf0a64b97"
+  },
+  "version": "0.3.0-rc.1"
+}

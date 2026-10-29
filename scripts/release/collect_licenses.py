@@ -37,7 +37,7 @@ def collect(vendor, destination):
     result = {'schema_version': 1, 'scope': 'Actual upstream archive notices; source archives accompany this inventory. This inventory is not a public-release approval.',
               'components': records, 'additional_runtime_notices': ['/usr/share/doc', '/usr/share/common-licenses', '/opt/wbg-engine/venv/lib/python3.10/site-packages'],
               'powershell_notices': 'LICENSE.txt and ThirdPartyNotices.txt in the unchanged official ZIP',
-              'project_license_selection': 'pending_before_public_release'}
+              'project_license_selection': 'MIT for independent original code; upstream notices and derived-patch licenses retained'}
     (destination / 'inventory.json').write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
     return {'components': len(records), 'notices': sum(len(row['notices']) for row in records)}
 

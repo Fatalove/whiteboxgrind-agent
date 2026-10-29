@@ -9,7 +9,7 @@
       "onboardingSkill": "./skills/whiteboxgrind-setup/SKILL.md",
       "interface": {
         "displayName": "Whiteboxgrind Agent",
-        "shortDescription": "鐧界洅瀵嗙爜瀛︿範涓庣珵璧涘伐鍏烽摼",
+        "shortDescription": "白盒 AES-128 本机分析与独立验证",
         "developerName": "Whiteboxgrind Agent contributors",
         "category": "Developer Tools",
         "capabilities": [
@@ -18,5 +18,11 @@
         ]
       }
     }
-  }
+  },
+  "author": {
+    "name": "Fatalove"
+  },
+  "repository": "https://github.com/Fatalove/whiteboxgrind-agent",
+  "homepage": "https://github.com/Fatalove/whiteboxgrind-agent",
+  "license": "MIT"
 }

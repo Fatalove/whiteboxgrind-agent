@@ -1,4 +1,4 @@
-<# Local release allowlist. No remote publication. #>
+<# Assemble only the release allowlist. The repository-only download descriptor is excluded to avoid a self-referential archive hash. #>
 param([Parameter(Mandatory=$true)][string]$ImageId,[Parameter(Mandatory=$true)][string]$BuildContext,
  [Parameter(Mandatory=$true)][string]$LicenseDirectory,[Parameter(Mandatory=$true)][string]$Destination,
  [Parameter(Mandatory=$true)][string]$PowerShellArchive)
@@ -20,7 +20,7 @@ if((Get-FileHash -LiteralPath $PowerShellArchive).Hash.ToLowerInvariant() -ne '0
 foreach($directory in @('src','fixtures','patches','plugins','docs','scripts/windows')){
  $destinationPath=Join-Path $target $directory
  [void][IO.Directory]::CreateDirectory($destinationPath)
- Get-ChildItem -LiteralPath (Join-Path $project $directory) -Recurse -File -Force | Where-Object {$_.Extension -ne '.pyc' -and $_.FullName -notmatch '[\\/]__pycache__[\\/]'} | ForEach-Object {
+ Get-ChildItem -LiteralPath (Join-Path $project $directory) -Recurse -File -Force | Where-Object {$_.Name -ne 'release-source.json' -and $_.Extension -ne '.pyc' -and $_.FullName -notmatch '[\\/]__pycache__[\\/]'} | ForEach-Object {
   $relative=$_.FullName.Substring((Join-Path $project $directory).Length+1)
   $file=Join-Path $destinationPath $relative
   [void][IO.Directory]::CreateDirectory((Split-Path -Parent $file))

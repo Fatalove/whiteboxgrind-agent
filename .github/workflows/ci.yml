@@ -1,0 +1,29 @@
+name: Source checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: PowerShell syntax and missing-install diagnostics
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          Get-ChildItem scripts,plugins -Recurse -Filter '*.ps1' | ForEach-Object {
+            $tokens=$null;$errors=$null
+            [void][Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors)
+            if($errors){throw ($errors|Out-String)}
+          }
+          $target=Join-Path $env:RUNNER_TEMP 'wbg-absent'
+          & powershell.exe -NoProfile -File plugins/whiteboxgrind/scripts/bootstrap.ps1 -Action Check -Destination $target
+          if($LASTEXITCODE -ne 2 -or (Test-Path -LiteralPath $target)){throw 'Missing install must remain absent and return 2'}
+          exit 0
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - run: python3 scripts/release/audit_source.py
