@@ -1,0 +1,29 @@
+name: Anonymous image verification
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  anonymous:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Pull from GHCR with an empty credential store
+        shell: bash
+        run: |
+          set -euo pipefail
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}:$(cat VERSION)"
+          mkdir -p "$RUNNER_TEMP/anonymous-docker"
+          printf '{"auths":{}}' > "$RUNNER_TEMP/anonymous-docker/config.json"
+          docker --config "$RUNNER_TEMP/anonymous-docker" pull "$IMAGE"
+          python3 scripts/release/select_loaded_image.py
+          docker run --rm --network none --read-only --tmpfs /tmp:rw,nosuid,size=16777216 --entrypoint /opt/wbg-engine/venv/bin/python "$IMAGE" -m wbg.verify selftest --out /tmp/selftest.json
+          python3 scripts/release/registry_record.py "$IMAGE" "$RUNNER_TEMP/anonymous-pull.json"
+          python3 -c 'import json,os,pathlib;p=pathlib.Path(os.environ["RUNNER_TEMP"])/"anonymous-pull.json";r=json.loads(p.read_text());r.update(anonymous_pull=True,fresh_hosted_runner=True,scope="Actual GHCR anonymous pull and independent AES verifier selftest on fresh hosted runner");p.write_text(json.dumps(r,indent=2)+"\n")'
+      - name: Attach anonymous verification receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "v$(cat VERSION)" "$RUNNER_TEMP/anonymous-pull.json" -R "$GITHUB_REPOSITORY" --clobber
